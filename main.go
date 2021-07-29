@@ -2,8 +2,6 @@ package main
 
 import (
 	"HUST-Matcher/database"
-	"net/http"
-
 	//"github.com/garyburd/redigo/redis"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -19,12 +17,15 @@ func main() {
 	c := database.GetRClient()
 	pong, err := c.Ping().Result()
 	fmt.Println(pong, err)
-	err = http.ListenAndServe(":9990", nil)
-	if err != nil {
-		return
-	}
+	//err = http.ListenAndServe(":9990", nil)
+	//if err != nil {
+	//	return
+	//}
 	//fmt.Println(j)
-	panic(r.Run())
+	err = r.Run()
+	if err != nil {
+		panic(err)
+	}
 
 	//r := gin.Default()
 	////r = CollectRoute(r)

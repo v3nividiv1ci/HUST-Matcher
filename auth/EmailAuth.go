@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/smtp"
+	"regexp"
 	"time"
 )
 
@@ -56,4 +57,11 @@ func EmailAuth(StudentID string) string {
 
 	return vcode
 
+}
+
+func CheckString(string string) (b bool) {
+	if ok, _ := regexp.MatchString("^[a-zA-Z0-9]{4,16}$", string); !ok {
+		return false
+	}
+	return true
 }
