@@ -100,12 +100,12 @@ func RegisterInfo(c *gin.Context) {
 	// 检验用户名、密码是否合法及长度
 	if auth.CheckString(username) != true {
 		c.JSON(201,
-			gin.H{"code": 10005, "msg": "用户名不合法"})
+			gin.H{"code": 10005, "msg": "用户名应为2-16位英文或数字"})
 		return
 	}
 	if auth.CheckString(password) != true {
 		c.JSON(201,
-			gin.H{"code": 10006, "msg": "密码不合法"})
+			gin.H{"code": 10006, "msg": "密码应为2-16位英文或数字"})
 		return
 	}
 	EncryptedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -130,19 +130,20 @@ func LoginPwd(c *gin.Context) {
 	//	检查用户名密码是否合法
 	DB := database.GetDB()
 	var user model.User
-	username := c.PostForm("username")
+	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
-	if auth.CheckString(username) != true {
+	match, _ := regexp.MatchString("^[UMDumd]\\d{9}$", studentID)
+	if match != true {
 		c.JSON(201,
-			gin.H{"code": 10005, "msg": "用户名不合法"})
+			gin.H{"code": 10001, "msg": "学号格式错误"})
 		return
 	}
 	if auth.CheckString(password) != true {
 		c.JSON(201,
-			gin.H{"code": 10006, "msg": "密码不合法"})
+			gin.H{"code": 10006, "msg": "密码应为2-16位英文或数字"})
 		return
 	}
-	DB.Table("users").Where("Username = ?", username).First(&user)
+	DB.Table("users").Where("student_id = ?", studentID).First(&user)
 	if user.ID == 0 {
 		c.JSON(201,
 			gin.H{"code": 10008, "msg": "用户未注册"})

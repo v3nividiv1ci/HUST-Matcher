@@ -4,7 +4,6 @@ import (
 	"HUST-Matcher/database"
 	"HUST-Matcher/model"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func JwtMiddleWare() gin.HandlerFunc {
@@ -13,15 +12,19 @@ func JwtMiddleWare() gin.HandlerFunc {
 		//oauth2.0 "bearer "[7]
 		string := c.GetHeader("Authorization")
 		if len(string) < 8 {
-			c.JSON(http.StatusUnauthorized,
+			c.JSON(201,
 				gin.H{"code": 10010, "msg": "token格式错误"})
+			c.Abort()
+			return
 		}
 		TString := c.GetHeader("Authorization")[7:]
 		token, claims, err := TokenParse(TString)
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized,
+			c.JSON(201,
 				gin.H{"code": 10011, "msg": "token不合法"})
+			c.Abort()
+			return
 		}
 
 		UserId := claims.UserId
@@ -31,12 +34,16 @@ func JwtMiddleWare() gin.HandlerFunc {
 
 		// not registered
 		if user.ID == 0 {
-			c.JSON(http.StatusUnauthorized,
+			c.JSON(201,
 				gin.H{"code": 10012, "msg": "用户未注册"})
+			c.Abort()
+			return
 		}
 
 		// write
 		c.Set("user", user)
 		c.Next()
+		//c.JSON(http.StatusOK,
+		//	gin.H{"code": 200, "msg": "验证成功"})
 	}
 }

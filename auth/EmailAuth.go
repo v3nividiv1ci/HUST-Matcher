@@ -36,7 +36,7 @@ func EmailAuth(StudentID string) string {
 
 	//	设置邮件主题和正文，写入验证码
 	subject = "HUST-Matcher邮箱验证"
-	body = vcode
+	body = "<h3>【HUST Matcher】</h3><p>您的验证码是：<b>" + vcode + "</b>，五分钟内有效。</p><p>欢迎使用HUST Matcher！</p><p><b>What you need，what we match.</b></p>"
 	fmt.Println(vcode)
 
 	//	要发送的消息，先用s格式化
@@ -60,7 +60,7 @@ func EmailAuth(StudentID string) string {
 }
 
 func CheckString(string string) (b bool) {
-	if ok, _ := regexp.MatchString("^[a-zA-Z0-9]{4,16}$", string); !ok {
+	if ok, _ := regexp.MatchString("^[a-zA-Z0-9]{2,16}$", string); !ok {
 		return false
 	}
 	return true

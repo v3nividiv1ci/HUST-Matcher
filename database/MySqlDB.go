@@ -21,6 +21,7 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Msg{})
 	MDB = db
 	return db
 }
