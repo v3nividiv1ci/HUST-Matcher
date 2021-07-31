@@ -66,11 +66,17 @@ func Match(c *gin.Context) {
 	//	遍历
 	//DB.Table(l[1]).Last(&Monee)
 	result := DB.Table(l[1]).Find(&Monees)
-	//fmt.Println(Monees)
+	//fmt.Println(Monees)w
 	num := int(result.RowsAffected)
 	//num := int(Monee.ID)
 	//fmt.Println("num is", num)
-	TimeP, _ := strconv.Atoi(Pugss.Time[0:4] + Pugss.Time[5:7] + Pugss.Time[8:10] + string(Pugss.Time[11]))
+	TimeP, err := strconv.Atoi(Pugss.Time[0:4] + Pugss.Time[5:7] + Pugss.Time[8:10] + string(Pugss.Time[11]))
+	if err != nil {
+		c.JSON(201,
+			gin.H{"code": 10016, "msg": "时间类型错误", "data": ""})
+		c.Abort()
+		return
+	}
 	for i := 0; i < num; i++ {
 		fmt.Println("i ", i)
 		//db := database.GetDB()

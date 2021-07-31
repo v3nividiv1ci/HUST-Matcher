@@ -21,6 +21,12 @@ func SeekObject(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	if len(lost.Time) != 12 {
+		c.JSON(201,
+			gin.H{"code": 10016, "msg": "时间类型错误"})
+		c.Abort()
+		return
+	}
 	//rawData, _ := c.Get(gin.BodyBytesKey)
 	//var f interface{}
 	//err = json.Unmarshal(rawData.([]byte), &f)
@@ -53,6 +59,12 @@ func SeekPerson(c *gin.Context) {
 	if err != nil {
 		c.JSON(201,
 			gin.H{"code": 10015, "msg": "字段不能为空"})
+		c.Abort()
+		return
+	}
+	if len(found.Time) != 12 {
+		c.JSON(201,
+			gin.H{"code": 10016, "msg": "时间类型错误"})
 		c.Abort()
 		return
 	}
