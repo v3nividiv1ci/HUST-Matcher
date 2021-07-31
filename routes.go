@@ -19,6 +19,7 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 	r.POST("/api/seek/object", auth.JwtMiddleWare(), controller.SeekObject)
 	r.POST("/api/seek/person", auth.JwtMiddleWare(), controller.SeekPerson)
 	r.POST("/api/seek/match", auth.JwtMiddleWare(), algorithm.Match)
+	r.GET("/api/seek/posts", auth.JwtMiddleWare(), controller.MyPosts)
 	r.GET("/test", controller.Test)
 	return r
 }

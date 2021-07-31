@@ -43,7 +43,6 @@ func intersect(slice1, slice2 [3]string) int {
 // Match Pugss: 失魂人(去匹配的) Monee: 控魂人(被匹配到的) :)
 func Match(c *gin.Context) {
 	mid, _ := strconv.Atoi(c.PostForm("mid"))
-	fmt.Println("mid was", mid)
 	DB := database.GetDB()
 	var Pugss model.Msg
 	var Monees []model.Msg
@@ -61,18 +60,16 @@ func Match(c *gin.Context) {
 		class = 1
 		l[0], l[1] = "losts", "founds"
 	}
-	fmt.Println("class 是", class)
-	fmt.Println("mid is", mid)
 	TableP := DB.Table(l[0])
 	TableP.Where("id = ?", mid).First(&Pugss)
 	kwP[0], kwP[1], kwP[2] = Pugss.Tag2, Pugss.Tag1, Pugss.Tag3
 	//	遍历
 	//DB.Table(l[1]).Last(&Monee)
 	result := DB.Table(l[1]).Find(&Monees)
-	fmt.Println(Monees)
+	//fmt.Println(Monees)
 	num := int(result.RowsAffected)
 	//num := int(Monee.ID)
-	fmt.Println("num is", num)
+	//fmt.Println("num is", num)
 	TimeP, _ := strconv.Atoi(Pugss.Time[0:4] + Pugss.Time[5:7] + Pugss.Time[8:10] + string(Pugss.Time[11]))
 	for i := 0; i < num; i++ {
 		fmt.Println("i ", i)
@@ -84,30 +81,29 @@ func Match(c *gin.Context) {
 		fmt.Println("monee id是", Monees[i].ID)
 		//	1.时间里的数字 比大小
 		TimeM, _ := strconv.Atoi(Monees[i].Time[0:4] + Monees[i].Time[5:7] + Monees[i].Time[8:10] + string(Monees[i].Time[11]))
-		fmt.Println("时间是：", TimeP, TimeM)
 		if (class == 2 && TimeP < TimeM) || (class == 1 && TimeP > TimeM) {
 			continue
 		}
 		//	2.取出待匹配的中的三个关键词，进行匹配
 		kwM[0], kwM[1], kwM[2] = Monees[i].Tag1, Monees[i].Tag2, Monees[i].Tag3
 		temp = float32(intersect(kwM, kwP)) / float32(union(kwM, kwP))
-		fmt.Println("%s 的匹配度是%s", i, temp)
+		fmt.Println("匹配度是", temp)
 		if temp >= similarity {
 			similarity = temp
 			tid = i
 		}
 	}
-	fmt.Println("tid 是", tid)
-	fmt.Println("monees[tid].id是", Monees[tid].ID)
+	//fmt.Println("tid 是", tid)
+	//fmt.Println("monees[tid].id是", Monees[tid].ID)
 	//dB := database.GetDB()
 	//dB.Table(l[1]).Where("id = ?", tid).First(&Monee)
 	if Monees[tid].ID == 0 || similarity == 0 {
 		c.JSON(201,
-			gin.H{"code": 10014, "msg": "无匹配", "post": ""})
+			gin.H{"code": 10014, "msg": "无匹配", "data": ""})
 		c.Abort()
 		return
 	}
 	c.JSON(200,
-		gin.H{"code": 200, "msg": "有匹配", "post": Monees[tid]})
+		gin.H{"code": 200, "msg": "有匹配", "data": Monees[tid]})
 
 }
